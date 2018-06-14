@@ -1,36 +1,4 @@
 #include "util/io.h"
-
-//#ifdef UNITTEST
-//#include "test/mock_system_func.h"
-//#endif
-
-template <class Func>
-static ssize_t NonePosixIoWrapper(Func func, int fd, const struct iovec *vector,
-                           int count, off_t offset) {
-    ssize_t bytes_total = 0;
-    for (int i = 0; i < count; ++i) {
-        const ssize_t bytes = func(fd, vector[i].iov_base, vector[i].iov_len, offset);
-        if (bytes <= 0) {
-            return bytes_total > 0 ? bytes_total : bytes;
-        }
-        bytes_total += bytes;
-        offset += bytes;
-        if (bytes < (ssize_t)vector[i].iov_len) {
-            break;
-        }
-    }
-    return bytes_total;
-}
-
-#if defined(__APPLE__)
-ssize_t preadv(int fd, const iovec* iov, int count, off_t offset) {
-    return NonePosixIoWrapper(pread, fd, iov, count, offset);
-}
-ssize_t pwritev(int fd, const iovec* iov, int count, off_t offset) {
-    return NonePosixIoWrapper(pwrite, fd, iov, count, offset);
-}
-#endif
-
 namespace util {
 
 ssize_t UninterruptedPread(int fd, void * buffer, size_t count, off_t offset) {

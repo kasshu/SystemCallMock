@@ -17,5 +17,5 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 # Link runTests with what we want to test and the GTest and pthread library
 add_definitions(-std=c++14 -ggdb)
 include_directories(.)
-add_executable(IOTest test/io_test.cpp util/io.cpp)
+add_executable(IOTest test/io_test.cpp src/io.cpp)
 target_link_libraries(IOTest ${GTEST_LIBRARIES} ${GMOCK_LIBRARIES} ${GMOCK_MAIN_LIBRARIES} pthread)
